@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+    "id": "apple",
+    "generalType": ["food"],
+    "specificType": ["fruit"]
+    },
+    { "id": "sword" },
+    { 
+      "id": "red_pearl",
+      "generalType": ["gear"],
+      "specificType": ["ark"]
+    },
+    { "id": "orange_pearl" },
+    { "id": "yellow_pearl" },
+    { "id": "green_pearl" },
+    { "id": "blue_pearl" },
+    { "id": "purple_pearl" },
+    { "id": "pink_pearl" },
+    { "id": "white_pearl" },
+    { "id": "black_pearl" }
+  ]
+}

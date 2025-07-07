@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab3a68c2468cb845bef599ff0ded2e8, type: 3}
+  m_Name: purple_slot_selection
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 7ecb0f973c9699b4a8449ef91aa3dcf5, type: 3}
+  - {fileID: 21300000, guid: 7f5eaae3f6a19ac468430b9ff128a49d, type: 3}
+  - {fileID: 21300000, guid: 6821dc01883c92d4395d22aa27081254, type: 3}
+  - {fileID: 21300000, guid: 1c0a52c1358e7d44f9479c8336a78b24, type: 3}
+  - {fileID: 21300000, guid: a8fed4110be04a8498cc8a280cfa3081, type: 3}
+  - {fileID: 21300000, guid: 6acf55f5fe780e849bacb5752f297a0a, type: 3}
+  - {fileID: 21300000, guid: b50712dd08345ad43b87666e764de8c2, type: 3}
+  - {fileID: 21300000, guid: 7c6b91a14d01c454096822dc2414bdda, type: 3}

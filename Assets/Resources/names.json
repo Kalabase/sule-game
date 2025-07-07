@@ -1,0 +1,16 @@
+{
+    "names": [
+      { "id": "apple", "name": "Elma" },
+      { "id": "sword", "name": "Kılıç" },
+      { "id": "select", "name": "Seç" },
+      { "id": "red_pearl", "name": "Kızıl İnci" },
+      { "id": "orange_pearl", "name": "Turunç İnci" },
+      { "id": "yellow_pearl", "name": "Sarı İnci" },
+      { "id": "green_pearl", "name": "Yeşim İnci" },
+      { "id": "blue_pearl", "name": "Maviş İnci" },
+      { "id": "purple_pearl", "name": "Mor İnci" },
+      { "id": "pink_pearl", "name": "Pembiş İnci" },
+      { "id": "white_pearl", "name": "Beyaz İnci" },
+      { "id": "black_pearl", "name": "Siyah İnci" }
+    ]
+  }
