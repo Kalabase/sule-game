@@ -7,7 +7,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 {
     public Image BGImage;
     public Image itemImage;
-    public GameObject panelPrefab;
     public Canvas canvas;
     public ItemSlotContent isc;
     public int listIndex;
@@ -15,6 +14,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     public string type;
     public Sprite sourceImage;
     public Sprite pressedImage;
+    private GameObject currentSelectionObj; 
     public ID slotId;
 
     public GameObject itemNamePrefab;
@@ -33,26 +33,58 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     public void LoadSlot()
     {
+        if (UIManager.Instance.bottomMode == "hotbar" && type == "utility")
+        {
+            switch (index)
+            {
+                case 0:
+                    BGImage.sprite = Resources.Load<Sprite>($"sprite/ui/remove_hotbar_slot");
+                    break;
+                case 1:
+                    BGImage.sprite = Resources.Load<Sprite>($"sprite/ui/remove_hotbar");
+                    break;
+                case 2:
+                    BGImage.sprite = Resources.Load<Sprite>($"sprite/ui/add_hotbar");
+                    break;
+                case 3:
+                    BGImage.sprite = Resources.Load<Sprite>($"sprite/ui/add_hotbar_slot");
+                    break;
+            }
+        }
+
         if (type == "dock" &&
             Wallet.Instance.selectedHotbarSlotIndex == index &&
-            Wallet.Instance.selectedHotbarIndex == listIndex &&
             !UIManager.Instance.isBottomPanelOn)
         {
-            BGImage.transform.localScale = new Vector3(1.50f, 1.50f, 1.50f);
-            itemImage.transform.localScale = new Vector3(1.50f, 1.50f, 1.50f);
+            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, this.transform);
+            // var bgRect = BGImage.GetComponent<RectTransform>();
+            // var itemRect = itemImage.GetComponent<RectTransform>();
+
+            // bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y + 8f); // bottom
+            // bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y + 8f); // top
+
+            // itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 8f);
+            // itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 8f);
+
+            // BGImage.transform.localScale = new Vector3(4f / 3f, 4f / 3f, 1f);
+            // itemImage.transform.localScale = new Vector3(4f / 3f, 4f / 3f, 1f);
         }
-        else
+        else if (Wallet.Instance.selectedID != null &&
+                type == Wallet.Instance.selectedType &&
+                Wallet.Instance.selectedListIndex == listIndex &&
+                Wallet.Instance.selectedIndex == index
+                )
         {
-            BGImage.transform.localScale = Vector3.one;
-            itemImage.transform.localScale = Vector3.one;
+            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, this.transform);
+            UIManager.Instance.currentSelectionObj = currentSelectionObj;
         }
 
         if (slotId.Value == 0)
-        {
-            Sprite itemSprite = Resources.Load<Sprite>($"sprite/empty");
-            itemImage.sprite = itemSprite;
-            return;
-        }
+            {
+                Sprite itemSprite = Resources.Load<Sprite>($"sprite/empty");
+                itemImage.sprite = itemSprite;
+                return;
+            }
 
         ItemSlot itemSlot = null;
 
@@ -110,7 +142,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
         if (itemSlot.item != null)
         {
-            GameObject panel = Instantiate(panelPrefab, canvas.transform);
+            GameObject panel = Instantiate(UIManager.Instance.functionPanelPrefab, canvas.transform);
             UIManager.Instance.currentFunctionPanel = panel;
 
             panel.transform.position = this.transform.position;
@@ -125,11 +157,24 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        BGImage.transform.localScale = new Vector3(1.20f, 1.20f, 1.20f);
-        itemImage.transform.localScale = new Vector3(1.20f, 1.20f, 1.20f);
+        var bgRect = BGImage.GetComponent<RectTransform>();
+        var itemRect = itemImage.GetComponent<RectTransform>();
+        
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y + 3f); // bottom
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y + 3f); // top
+
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 3f);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 3f);
+
+        if (currentSelectionObj != null)
+        {
+            var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+            selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y + 3f);
+        }
 
         // Seçili slot bu slot ise item adını göster
         if (Wallet.Instance.selectedID != null &&
+            Wallet.Instance.selectedID.Value != 0 &&
             Wallet.Instance.selectedListIndex == listIndex &&
             Wallet.Instance.selectedIndex == index &&
             Wallet.Instance.selectedType == type)
@@ -142,26 +187,52 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         }
     }
 
-    // Fare slotun üzerinden ayrıldığında tetiklenir
     public void OnPointerExit(PointerEventData eventData)
     {
-        BGImage.transform.localScale = Vector3.one;
-        itemImage.transform.localScale = Vector3.one;
+        var bgRect = BGImage.GetComponent<RectTransform>();
+        var itemRect = itemImage.GetComponent<RectTransform>();
+        
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y - 3f);
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y - 3f);
+
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y - 3f);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y - 3f);
+
+        if (currentSelectionObj != null)
+        {
+            var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+            selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y - 3f);
+        }
+
 
         if (currentItemNameObj != null)
         {
             Destroy(currentItemNameObj);
         }
     }
-    
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        BGImage.sprite = pressedImage;
+        var bgRect = BGImage.GetComponent<RectTransform>();
+        var itemRect = itemImage.GetComponent<RectTransform>();
+
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y - 6f);
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y - 6f);
+
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y - 6f);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y - 6f);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        BGImage.sprite = sourceImage;
+        var bgRect = BGImage.GetComponent<RectTransform>();
+        var itemRect = itemImage.GetComponent<RectTransform>();
+
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y + 3f);
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y + 3f);
+
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 3f);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 3f);
     }
 }
 

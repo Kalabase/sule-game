@@ -52,7 +52,6 @@ public class Wallet : MonoBehaviour
         inventory = new List<ItemSlot>();
 
         hotbarList = new List<List<ID>>();
-        hotbarList.Add(new List<ID> { new ID(0) });
 
         gearList = new List<List<ID>>();
         for (int i = 0; i < 4; i++)
@@ -83,6 +82,14 @@ public class Wallet : MonoBehaviour
             utilityList["hotbar"].Add(newSlot);
         }
 
+        for(int i = 0; i < 64; i++)
+        {
+            AddRandomItem();
+        }
+        
+        hotbarList.Add(new List<ID> { new ID(0), inventory[1].id, inventory[2].id, inventory[3].id, new ID(0) });
+
+        UIManager.Instance.Initialize();
 
         maxSTR = 40;
         currentSTR = 25;
@@ -320,6 +327,7 @@ public class Wallet : MonoBehaviour
     public void SelectHotbar(int index)
     {
         selectedHotbarIndex = index;
+        selectedHotbarSlotIndex = 0;
         UIManager.Instance.Initialize();
     }
 

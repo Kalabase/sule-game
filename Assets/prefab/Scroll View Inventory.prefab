@@ -97,28 +97,36 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Spacing.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Spacing.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_CellSize.x
-      value: 50
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_CellSize.y
-      value: 50
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Top
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Left
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Right
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Bottom
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8373605788857667841, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Name

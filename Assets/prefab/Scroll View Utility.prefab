@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: m_ScrollSensitivity
       value: -20
       objectReference: {fileID: 0}
+    - target: {fileID: 1845877200526043595, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4273780719014196525, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -100,6 +104,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4356247092383858848, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4432583659311624725, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_VerticalFit
       value: 0
@@ -109,12 +117,20 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Spacing.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
+      propertyPath: m_Spacing.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_CellSize.x
-      value: 40
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_CellSize.y
-      value: 40
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Constraint
@@ -130,7 +146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Left
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_ConstraintCount
@@ -138,7 +154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Right
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Bottom

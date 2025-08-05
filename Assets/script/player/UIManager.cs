@@ -25,8 +25,9 @@ public class UIManager : MonoBehaviour
     public ID informedID;
 
     public GameObject slotSelectionPrefab;
+    public GameObject functionPanelPrefab;
 
-    private GameObject currentSelection;
+    public GameObject currentSelectionObj;
 
     public SpriteCollection blueSelectionCollection;
 
@@ -113,11 +114,6 @@ public class UIManager : MonoBehaviour
             dockPanel.gameObject.SetActive(true);
             InitializeDock();
             Debug.Log("Dock initialized");
-
-        }
-        if (selectedSlotUI != null)
-        {
-            InitializeSelection(selectedSlotUI);
         }
     }
 
@@ -263,7 +259,7 @@ public class UIManager : MonoBehaviour
 
     public void Refresh()
     {
-        Destroy(currentSelection);
+        Destroy(currentSelectionObj);
         Wallet.Instance.selectedID = null;
         if (currentFunctionPanel != null){Destroy(currentFunctionPanel);}
     }
@@ -302,38 +298,6 @@ public class UIManager : MonoBehaviour
     {
         informedID = slot.slotId;
         Debug.Log(Wallet.Instance.GetSlotById(slot.slotId).item.id);
-    }
-
-
-    public void InitializeSelection(SlotUI slot)
-    {
-        if (currentSelection != null)
-        {
-            Destroy(currentSelection);
-        }
-
-        if (slotSelectionPrefab != null && slot != null)
-        {
-            currentSelection = Instantiate(slotSelectionPrefab, slot.transform);
-
-            RectTransform selectionRect = currentSelection.GetComponent<RectTransform>();
-            if (selectionRect != null)
-            {
-                selectionRect.anchoredPosition = Vector2.zero;
-                selectionRect.localScale = Vector3.one;
-            }
-
-            LoopingImage loopingImage = currentSelection.GetComponent<LoopingImage>();
-            if (loopingImage != null)
-            {
-                loopingImage.spriteCollection = blueSelectionCollection;
-            }
-            Debug.Log("Selection succeed");
-        }
-        else
-        {
-            Debug.LogError("slotSelectionPrefab veya slot null!");
-        }
     }
 
     public void CloseInvPanel()
