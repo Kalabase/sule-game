@@ -179,6 +179,12 @@ public class Wallet : MonoBehaviour
 
     public void SelectSlot(SlotUI slotUI)
     {
+        if (slotUI.slotId == null)
+        {
+            Debug.LogError("Slot ID is null.");
+            return;
+        }
+
         ID slotId = slotUI.slotId;
         string type = slotUI.type;
         int listIndex = slotUI.listIndex;
@@ -194,6 +200,7 @@ public class Wallet : MonoBehaviour
 
         if (type == "utility")
         {
+            Debug.Log("BAMGÜM");
             if (UIManager.Instance.bottomMode == "gear")
             {
                 if (selectedID == null)
@@ -215,16 +222,16 @@ public class Wallet : MonoBehaviour
                         UpdateGearPage();
                     }
                 }
-                    else
+                else
+                {
+                    if (selectedID.Value != 0)
                     {
-                        if (selectedID.Value != 0)
-                        {
-                            Wallet.Instance.utilityList[UIManager.Instance.bottomMode][index] = GetSlotById(selectedID);
-                            selectedID = null;
-                        }
-                        else { selectedID = null; }
+                        Wallet.Instance.utilityList[UIManager.Instance.bottomMode][index] = GetSlotById(selectedID);
+                        selectedID = null;
                     }
-                    
+                    else { selectedID = null; }
+                }
+
             }
             else if (UIManager.Instance.bottomMode == "hotbar")
             {

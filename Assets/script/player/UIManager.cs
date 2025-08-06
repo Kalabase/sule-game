@@ -38,6 +38,9 @@ public class UIManager : MonoBehaviour
 
     public GameObject currentFunctionPanel;
 
+    public SlotUI pointerSlotUI;
+    public SlotUI hoveredSlotUI;
+
     void Awake()
     {
         if (Instance == null)
@@ -48,6 +51,22 @@ public class UIManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    public void Update()
+    {
+        if (pointerSlotUI != null)
+        {
+            if (pointerSlotUI.type != "utility" && Input.GetMouseButtonDown(0))
+            {
+                hoveredSlotUI = pointerSlotUI;
+            }
+            else if (hoveredSlotUI != null && Input.GetMouseButtonUp(0))
+            {
+                SelectSlot(hoveredSlotUI);
+                SelectSlot(pointerSlotUI);
+            }
         }
     }
 

@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4094008248402252997}
   - component: {fileID: 5830342541341870622}
   m_Layer: 5
-  m_Name: RaycasyTarget
+  m_Name: RaycastTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -318,7 +318,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BGImage: {fileID: 3076056426386545373}
   itemImage: {fileID: 4565731501438372599}
-  panelPrefab: {fileID: 3738539336700057525, guid: 4c9e208d3cb40a94594bc62776990688, type: 3}
   canvas: {fileID: 0}
   isc: {fileID: 0}
   listIndex: 0
