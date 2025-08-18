@@ -89,8 +89,6 @@ public class Wallet : MonoBehaviour
         
         hotbarList.Add(new List<ID> { new ID(0), inventory[1].id, inventory[2].id, inventory[3].id, new ID(0) });
 
-        UIManager.Instance.Initialize();
-
         maxSTR = 40;
         currentSTR = 25;
         STR = 25;
@@ -177,8 +175,143 @@ public class Wallet : MonoBehaviour
         }
     }
 
+    public void AddHotbar()
+    {
+        int insertIndex;
+        if (selectedID != null && selectedType == "hotbar")
+        {
+            insertIndex = selectedListIndex + 1;
+        }
+        else
+        {
+            insertIndex = hotbarList.Count;
+        }
+
+        if (insertIndex >= 0 && insertIndex <= hotbarList.Count)
+        {
+            List<ID> newHotbar = new List<ID> { new ID(0) };
+            hotbarList.Insert(insertIndex, newHotbar);
+            UIManager.Instance.hotbarSVC.AddScrollView(insertIndex, newHotbar);
+        }
+    }
+
+    public void RemoveHotbar()
+    {
+        int removeIndex;
+        if (selectedID != null && selectedType == "hotbar")
+        {
+            removeIndex = selectedListIndex;
+        }
+        else
+        {
+            removeIndex = hotbarList.Count - 1;
+        }
+
+        if (removeIndex >= 0 && removeIndex < hotbarList.Count && hotbarList.Count > 1)
+        {
+            hotbarList.RemoveAt(removeIndex);
+            if (selectedID != null && selectedType == "hotbar")
+            {
+                selectedID = null;
+            }
+            UIManager.Instance.hotbarSVC.RemoveScrollView(removeIndex);
+        }
+    }
+
+    public void AddHotbarSlot()
+    {
+        int insertIndex;
+        int listIndex;
+
+        if (selectedID != null && selectedType == "hotbar")
+        {
+            listIndex = selectedListIndex;
+            insertIndex = selectedIndex + 1;
+        }
+        else
+        {
+            listIndex = hotbarList.Count - 1;
+            insertIndex = hotbarList[listIndex].Count;
+        }
+
+        if (listIndex >= 0 && listIndex < hotbarList.Count)
+        {
+            List<ID> hotbar = hotbarList[listIndex];
+            if (insertIndex >= 0 && insertIndex <= hotbar.Count)
+            {
+                hotbar.Insert(insertIndex, new ID(0));
+                UIManager.Instance.hotbarSVC.itemSlotContents[listIndex].AddSlot(insertIndex, hotbarList[listIndex][insertIndex]);
+            }
+        }
+    }
+
+    public void RemoveHotbarSlot()
+    {
+        int listIndex;
+        int slotIndex;
+
+        if (selectedID != null && selectedType == "hotbar")
+        {
+            listIndex = selectedListIndex;
+            slotIndex = selectedIndex;
+        }
+        else
+        {
+            listIndex = hotbarList.Count - 1;
+            slotIndex = hotbarList[listIndex].Count - 1;
+        }
+
+        if (listIndex >= 0 && listIndex < hotbarList.Count)
+        {
+            List<ID> hotbar = hotbarList[listIndex];
+            if (slotIndex > 0 && slotIndex < hotbar.Count && hotbar.Count > 1)
+            {
+                hotbar.RemoveAt(slotIndex);
+                if (selectedID != null && selectedType == "hotbar")
+                {
+                    selectedID = null;
+                    SelectSlot(UIManager.Instance.hotbarSVC.itemSlotContents[listIndex].slotObjList[selectedIndex - 1].GetComponent<SlotUI>());
+                }
+                UIManager.Instance.hotbarSVC.itemSlotContents[listIndex].RemoveSlot(slotIndex);          
+            }
+        }
+    }
+
     public void SelectSlot(SlotUI slotUI)
     {
+        SlotUI previousSlotUI = null;
+        if (selectedID != null)
+        {
+            ScrollViewContent svc = null;
+            switch (selectedType)
+            {
+                case "inventory":
+                    svc = UIManager.Instance.invSVC;
+                    break;
+                case "hotbar":
+                    svc = UIManager.Instance.hotbarSVC;
+                    break;
+                case "gear":
+                    svc = UIManager.Instance.gearSVC;
+                    break;
+            }
+            if (svc != null && svc.scrollViewList.Count > selectedListIndex)
+            {
+                var scrollView = svc.scrollViewList[selectedListIndex];
+                var scrollViewInfo = scrollView.GetComponent<ScrollViewInfo>();
+                if (scrollViewInfo != null)
+                {
+                    var itemSlotContent = scrollViewInfo.itemSlotContent;
+                    if (itemSlotContent != null && itemSlotContent.slotObjList.Count > selectedIndex)
+                    {
+                        var obj = itemSlotContent.slotObjList[selectedIndex];
+                        previousSlotUI = obj.GetComponent<SlotUI>();
+                    }
+                }
+            }
+        }
+
+
         if (slotUI.slotId == null)
         {
             Debug.LogError("Slot ID is null.");
@@ -200,7 +333,6 @@ public class Wallet : MonoBehaviour
 
         if (type == "utility")
         {
-            Debug.Log("BAMGÜM");
             if (UIManager.Instance.bottomMode == "gear")
             {
                 if (selectedID == null)
@@ -238,21 +370,22 @@ public class Wallet : MonoBehaviour
                 switch (index)
                 {
                     case 0:
-                        UIManager.Instance.RemoveHotbarSlot();
+                        RemoveHotbarSlot();
                         break;
                     case 1:
-                        UIManager.Instance.RemoveHotbar();
+                        RemoveHotbar();
                         break;
                     case 2:
-                        UIManager.Instance.AddHotbar();
+                        AddHotbar();
                         break;
                     case 3:
-                        UIManager.Instance.AddHotbarSlot();
+                        AddHotbarSlot();
                         break;
                     default:
                         Debug.LogError("Invalid hotbar index for utility selection.");
                         break;
                 }
+
             }
         }
         else if (selectedID == null)
@@ -264,10 +397,6 @@ public class Wallet : MonoBehaviour
             if (selectedID.Value == slotId.Value && selectedType == type && selectedListIndex == listIndex && selectedIndex == index)
             {
                 selectedID = null;
-            }
-            else if (selectedID.Value == 0 && slotId.Value == 0)
-            {
-                select();
             }
             else if (selectedID.Value == 0 && slotId.Value == 0)
             {
@@ -288,6 +417,7 @@ public class Wallet : MonoBehaviour
             else if (selectedType == "inventory" && type == "hotbar")
             {
                 hotbarList[listIndex][index] = selectedID;
+                slotUI.slotId = selectedID;
                 selectedID = null;
             }
             else if (selectedType == "inventory" && type == "gear")
@@ -297,13 +427,24 @@ public class Wallet : MonoBehaviour
             }
             else if (selectedType == "hotbar" && type == "inventory")
             {
-                hotbarList[selectedListIndex][selectedIndex] = new ID(0);
-                selectedID = null;
+                if (selectedID.Value != 0)
+                {
+
+                    hotbarList[selectedListIndex][selectedIndex] = new ID(0);
+                    previousSlotUI.slotId = new ID(0);
+                    selectedID = null;
+                }
+                else
+                {
+                    select();
+                }
             }
             else if (selectedType == "hotbar" && type == "hotbar")
             {
                 hotbarList[selectedListIndex][selectedIndex] = slotId;
+                previousSlotUI.slotId = slotId;
                 hotbarList[listIndex][index] = selectedID;
+                slotUI.slotId = selectedID;
                 selectedID = null;
             }
             else if (selectedType == "hotbar" && type == "gear")
@@ -319,6 +460,7 @@ public class Wallet : MonoBehaviour
             else if (selectedType == "gear" && type == "hotbar")
             {
                 hotbarList[listIndex][index] = selectedID;
+                slotUI.slotId = selectedID;
                 selectedID = null;
             }
             else if (selectedType == "gear" && type == "gear")
@@ -328,7 +470,11 @@ public class Wallet : MonoBehaviour
             }
         }
 
-        UIManager.Instance.Initialize();
+        slotUI.LoadSlot();
+        if (previousSlotUI != null && previousSlotUI != slotUI)
+        {
+            previousSlotUI.LoadSlot();
+        }
     }
 
     public void SelectHotbar(int index)
@@ -386,7 +532,6 @@ public class Wallet : MonoBehaviour
 
         AddItem(randomItemId);
 
-        Debug.Log($"Random item added: {randomItemId}");
     }
 
     public void RemoveRandomSlot()
@@ -427,13 +572,11 @@ public class Wallet : MonoBehaviour
             return;
         }
 
-        Debug.Log((inventory == null) ? "is null" : "is not null");
         foreach (ItemSlot slot in inventory)
         {
             if (slot.item != null && slot.item.id == item.id)
             {
                 slot.count += count;
-                Debug.Log($"Added {count}x {item.id} to existing slot. New count: {slot.count}");
                 return;
             }
         }
@@ -456,7 +599,6 @@ public class Wallet : MonoBehaviour
         {
             selectedIndex = inventory.FindIndex(slot => slot.id.Value == selectedID.Value);
         }
-        UIManager.Instance.Initialize();
     }
 
     public void EquipItem(ItemSlot itemSlot)
@@ -520,8 +662,6 @@ public class Wallet : MonoBehaviour
             .Where(slot => slot.item != null)
             .OrderBy(slot => slot.item.id)
             .ToList();
-
-        Debug.Log("Inventory organized: Items sorted alphabetically and empty slots removed.");
     }
 
     public void PrintInventory()

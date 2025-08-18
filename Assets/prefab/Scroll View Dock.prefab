@@ -150,7 +150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_ChildAlignment
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6181041556001393181, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_Padding.m_Left
@@ -214,7 +214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9002682702606873334, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.00078201294
       objectReference: {fileID: 0}
     - target: {fileID: 9002682702606873334, guid: 5ca17a2b446d02646927fbf9c47b159d, type: 3}
       propertyPath: m_AnchoredPosition.y

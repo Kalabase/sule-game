@@ -58,18 +58,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
             Wallet.Instance.selectedHotbarSlotIndex == index &&
             !UIManager.Instance.isBottomPanelOn)
         {
-            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, this.transform);
-            // var bgRect = BGImage.GetComponent<RectTransform>();
-            // var itemRect = itemImage.GetComponent<RectTransform>();
-
-            // bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y + 8f); // bottom
-            // bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y + 8f); // top
-
-            // itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 8f);
-            // itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 8f);
-
-            // BGImage.transform.localScale = new Vector3(4f / 3f, 4f / 3f, 1f);
-            // itemImage.transform.localScale = new Vector3(4f / 3f, 4f / 3f, 1f);
+            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, BGImage.transform);
         }
         else if (Wallet.Instance.selectedID != null &&
                 type == Wallet.Instance.selectedType &&
@@ -77,8 +66,13 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
                 Wallet.Instance.selectedIndex == index
                 )
         {
-            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, this.transform);
+            currentSelectionObj = Instantiate(UIManager.Instance.slotSelectionPrefab, BGImage.transform);
             UIManager.Instance.currentSelectionObj = currentSelectionObj;
+        }
+        else if (currentSelectionObj != null)
+        {
+            Destroy(currentSelectionObj);
+            UIManager.Instance.currentSelectionObj = null;
         }
 
         if (slotId.Value == 0)
@@ -168,11 +162,11 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 3f);
         itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 3f);
 
-        if (currentSelectionObj != null)
-        {
-            var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
-            selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y + 3f);
-        }
+        // if (currentSelectionObj != null)
+        // {
+        //     var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+        //     selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y + 3f);
+        // }
 
         // Seçili slot bu slot ise item adını göster
         if (Wallet.Instance.selectedID != null &&
@@ -196,18 +190,24 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         var bgRect = BGImage.GetComponent<RectTransform>();
         var itemRect = itemImage.GetComponent<RectTransform>();
 
-        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y - 3f);
-        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y - 3f);
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, 0);
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, 0);
 
-        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y - 3f);
-        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y - 3f);
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, 0);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, 0);
 
-        if (currentSelectionObj != null)
+        // if (currentSelectionObj != null)
+        // {
+        //     var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+        //     selectionRect.localPosition = Vector2.zero;
+        //     selectionRect.anchoredPosition = Vector2.zero;
+        // }
+
+        if (UIManager.Instance.hoveredSlotUI == this)
         {
-            var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
-            selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y - 3f);
+            Destroy(currentSelectionObj);
+            currentSelectionObj = null;
         }
-
 
         if (currentItemNameObj != null)
         {
@@ -221,12 +221,19 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         var bgRect = BGImage.GetComponent<RectTransform>();
         var itemRect = itemImage.GetComponent<RectTransform>();
+        
 
-        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y - 6f);
-        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y - 6f);
+        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, -6f);
+        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, -6f);
 
-        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y - 6f);
-        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y - 6f);
+        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, -6f);
+        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, -6f);
+
+        // if (currentSelectionObj != null)
+        // {
+        //     var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+        //     selectionRect.localPosition = new Vector2(selectionRect.localPosition.x, selectionRect.localPosition.y - 6f);
+        // }
 
         eventData.Use();
     }
@@ -236,11 +243,17 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         var bgRect = BGImage.GetComponent<RectTransform>();
         var itemRect = itemImage.GetComponent<RectTransform>();
 
-        bgRect.offsetMin = new Vector2(bgRect.offsetMin.x, bgRect.offsetMin.y + 6f);
-        bgRect.offsetMax = new Vector2(bgRect.offsetMax.x, bgRect.offsetMax.y + 6f);
+        bgRect.offsetMin = new Vector2(0, 0);
+        bgRect.offsetMax = new Vector2(0, 0);
 
-        itemRect.offsetMin = new Vector2(itemRect.offsetMin.x, itemRect.offsetMin.y + 6f);
-        itemRect.offsetMax = new Vector2(itemRect.offsetMax.x, itemRect.offsetMax.y + 6f);
+        itemRect.offsetMin = new Vector2(0, 0);
+        itemRect.offsetMax = new Vector2(0, 0);
+
+        // if (currentSelectionObj != null)
+        // {
+        //     var selectionRect = currentSelectionObj.GetComponent<RectTransform>();
+        //     selectionRect.localPosition = Vector2.zero;
+        // }
     }
 }
 

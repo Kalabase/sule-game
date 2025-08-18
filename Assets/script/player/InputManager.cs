@@ -2,28 +2,24 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    private float scrollCooldown = 0.15f; // slot değişimi için minimum süre (saniye)
-    private float lastScrollTime = 0f;
-
     void Update()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (Wallet.Instance.hotbarList == null || Wallet.Instance.hotbarList.Count == 0)
-            return;
-
-        int slotCount = Wallet.Instance.hotbarList[Wallet.Instance.selectedHotbarIndex].Count;
-        bool slotChanged = false;
-
-        // Sadece belirli aralıklarla slot değiştir
-        if (Time.time - lastScrollTime > scrollCooldown)
+        if (!UIManager.Instance.isBottomPanelOn)
         {
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (Wallet.Instance.hotbarList == null || Wallet.Instance.hotbarList.Count == 0)
+                return;
+
+            int slotCount = Wallet.Instance.hotbarList[Wallet.Instance.selectedHotbarIndex].Count;
+            int prevSelectedIndex = Wallet.Instance.selectedHotbarSlotIndex;
+            bool slotChanged = false;
+
             if (scroll > 0.05f)
             {
                 if (Wallet.Instance.selectedHotbarSlotIndex > 0)
                 {
                     Wallet.Instance.selectedHotbarSlotIndex--;
                     slotChanged = true;
-                    lastScrollTime = Time.time;
                 }
             }
             else if (scroll < -0.05f)
@@ -32,14 +28,35 @@ public class InputManager : MonoBehaviour
                 {
                     Wallet.Instance.selectedHotbarSlotIndex++;
                     slotChanged = true;
-                    lastScrollTime = Time.time;
                 }
             }
-        }
 
-        if (slotChanged)
-        {
-            UIManager.Instance.InitializeDock();
+            if (slotChanged)
+            {
+                // Eski ve yeni slotları güncelle
+                var dockSvc = UIManager.Instance.dockSVC;
+                var itemSlotContent = dockSvc.scrollViewList[0].GetComponent<ScrollViewInfo>().itemSlotContent;
+
+                // Eski slot
+                if (prevSelectedIndex >= 0 && prevSelectedIndex < itemSlotContent.slotObjList.Count)
+                {
+                    var prevSlotUI = itemSlotContent.slotObjList[prevSelectedIndex].GetComponent<SlotUI>();
+                    prevSlotUI.LoadSlot();
+                }
+                // Yeni slot
+                int newSelectedIndex = Wallet.Instance.selectedHotbarSlotIndex;
+                if (newSelectedIndex >= 0 && newSelectedIndex < itemSlotContent.slotObjList.Count)
+                {
+                    var newSlotUI = itemSlotContent.slotObjList[newSelectedIndex].GetComponent<SlotUI>();
+                    newSlotUI.LoadSlot();
+                }
+
+                var contentScroller = itemSlotContent.GetComponent<ContentScroller>();
+                if (contentScroller != null)
+                {
+                    contentScroller.ScrollToSelectedSlot();
+                }
+            }
         }
     }
 }

@@ -38,19 +38,14 @@ public class GameManager : MonoBehaviour
     {
         // ItemManager'ı başlat
         itemManager.Initialize();
-        Debug.Log("ItemManager initialized.");
         yield return null; // Bir frame bekle
 
         // Wallet'ı başlat
         wallet.Initialize();
-        Debug.Log("Wallet initialized.");
         yield return null; // Bir frame bekle
 
         // UIManager'ı başlat
         uiManager.Initialize();
-        Debug.Log("UIManager initialized.");
-
-        var apple = ItemManager.GetItem("apple");
     }
 }
 

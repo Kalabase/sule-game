@@ -34,7 +34,6 @@ public class LocalizationManager : MonoBehaviour
             localizedText = JsonConvert.DeserializeObject<Dictionary<string, string>>(dataAsJson);
             currentLanguage = languageCode;
             isReady = true;
-            Debug.Log("Dil yüklendi: " + languageCode);
         }
         else
         {

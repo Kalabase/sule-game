@@ -22,8 +22,6 @@ public class UIManager : MonoBehaviour
     public Transform utilityPanel;
     public Transform dockPanel;
 
-    public ID informedID;
-
     public GameObject slotSelectionPrefab;
     public GameObject functionPanelPrefab;
 
@@ -58,20 +56,25 @@ public class UIManager : MonoBehaviour
     {
         if (pointerSlotUI != null)
         {
-            if (pointerSlotUI.type != "utility" && Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (hoveredSlotUI != null)
+                {
+                    SelectSlot(hoveredSlotUI);
+                    SelectSlot(pointerSlotUI);
+                }
+                hoveredSlotUI = null;
+            }
+            else if (pointerSlotUI.type == "inventory" && Input.GetMouseButtonDown(0))
             {
                 hoveredSlotUI = pointerSlotUI;
-            }
-            else if (hoveredSlotUI != null && Input.GetMouseButtonUp(0))
-            {
-                SelectSlot(hoveredSlotUI);
-                SelectSlot(pointerSlotUI);
             }
         }
     }
 
     public void Initialize()
     {
+        Debug.Log("whole UI Initialized");
         SlotUI selectedSlotUI = null;
 
         InitializeInventory();
@@ -83,6 +86,13 @@ public class UIManager : MonoBehaviour
                 Debug.LogError("Selected Slot UI is null!");
             }
         }
+        InitializeDock();
+        dockPanel.gameObject.SetActive(false);
+        SetBottomPanel();
+    }
+
+    public void SetBottomPanel()
+    {
         if (isBottomPanelOn)
         {
             switch (bottomMode)
@@ -94,10 +104,6 @@ public class UIManager : MonoBehaviour
                     statPanel.gameObject.SetActive(false);
                     InitializeHotbar();
                     InitializeUtility();
-                    if (Wallet.Instance.selectedType == "hotbar" && Wallet.Instance.selectedID != null)
-                    {
-                        selectedSlotUI = hotbarSVC.scrollViewList[Wallet.Instance.selectedListIndex].GetComponent<ScrollViewInfo>().itemSlotContent.slotObjList[Wallet.Instance.selectedIndex].GetComponent<SlotUI>();
-                    }
                     break;
                 case "gear":
                     gearPanel.gameObject.SetActive(true);
@@ -106,10 +112,6 @@ public class UIManager : MonoBehaviour
                     statPanel.gameObject.SetActive(false);
                     InitializeGear();
                     InitializeUtility();
-                    if (Wallet.Instance.selectedType == "gear" && Wallet.Instance.selectedID != null)
-                    {
-                        selectedSlotUI = gearSVC.scrollViewList[Wallet.Instance.selectedListIndex].GetComponent<ScrollViewInfo>().itemSlotContent.slotObjList[Wallet.Instance.selectedIndex].GetComponent<SlotUI>();
-                    }
                     break;
                 case "stat":
                     statPanel.gameObject.SetActive(true);
@@ -139,142 +141,142 @@ public class UIManager : MonoBehaviour
     
     public void InitializeDock()
     {
+        Debug.Log("dock UI Initialized");
         dockSVC.Initialize();
     }
     public void InitializeInventory()
     {
+        Debug.Log("inventory UI Initialized");
         invSVC.Initialize();
     }
 
     public void InitializeHotbar()
     {
+        Debug.Log("hotbar UI Initialized");
         hotbarSVC.Initialize();
     }
 
     public void InitializeGear()
     {
+        Debug.Log("gear UI Initialized");
         gearSVC.Initialize();
     }
 
     public void InitializeStat()
     {
+        Debug.Log("stat UI Initialized");
         statPanelUI.Initialize();
     }
 
     public void InitializeUtility()
     {
+        Debug.Log("utility UI Initialized");
         utilitySVC.Initialize();
     }
 
-    public void AddHotbar()
-    {
-        List<ID> newHotbar = new List<ID> { new ID(0) };
+    // public void AddHotbar()
+    // {
+    //     List<ID> newHotbar = new List<ID> { new ID(0) };
 
-        if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
-        {
-            int insertIndex = Wallet.Instance.selectedListIndex + 1;
-            if (insertIndex >= 0 && insertIndex <= Wallet.Instance.hotbarList.Count)
-            {
-                Wallet.Instance.hotbarList.Insert(insertIndex, newHotbar);
-            }
-            else
-            {
-                Wallet.Instance.hotbarList.Add(newHotbar);
-            }
-        }
-        else
-        {
-            Wallet.Instance.hotbarList.Add(newHotbar);
-        }
+    //     if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
+    //     {
+    //         int insertIndex = Wallet.Instance.selectedListIndex + 1;
+    //         if (insertIndex >= 0 && insertIndex <= Wallet.Instance.hotbarList.Count)
+    //         {
+    //             Wallet.Instance.hotbarList.Insert(insertIndex, newHotbar);
+    //         }
+    //         else
+    //         {
+    //             Wallet.Instance.hotbarList.Add(newHotbar);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Wallet.Instance.hotbarList.Add(newHotbar);
+    //     }
 
-        UIManager.Instance.Initialize();
-    }
+    //     UIManager.Instance.Initialize();
+    // }
 
-    public void AddHotbarSlot()
-    {
-        // Seçili hotbar ve slot varsa, ilgili hotbar'a, seçili slotun hemen sonrasına ekle
-        if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
-        {
-            int listIndex = Wallet.Instance.selectedListIndex;
-            int insertIndex = Wallet.Instance.selectedIndex + 1;
+    // public void AddHotbarSlot()
+    // {
+    //     // Seçili hotbar ve slot varsa, ilgili hotbar'a, seçili slotun hemen sonrasına ekle
+    //     if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
+    //     {
+    //         int listIndex = Wallet.Instance.selectedListIndex;
+    //         int insertIndex = Wallet.Instance.selectedIndex + 1;
 
-            if (listIndex >= 0 && listIndex < Wallet.Instance.hotbarList.Count)
-            {
-                List<ID> hotbar = Wallet.Instance.hotbarList[listIndex];
-                if (insertIndex >= 0 && insertIndex <= hotbar.Count)
-                {
-                    hotbar.Insert(insertIndex, new ID(0));
-                    Initialize();
-                    return;
-                }
-            }
-        }
-        if (Wallet.Instance.hotbarList.Count > 0)
-        {
-            Wallet.Instance.hotbarList[Wallet.Instance.hotbarList.Count - 1].Add(new ID(0));
-            Initialize();
-        }
-    }
+    //         if (listIndex >= 0 && listIndex < Wallet.Instance.hotbarList.Count)
+    //         {
+    //             List<ID> hotbar = Wallet.Instance.hotbarList[listIndex];
+    //             if (insertIndex >= 0 && insertIndex <= hotbar.Count)
+    //             {
+    //                 hotbar.Insert(insertIndex, new ID(0));
+    //                 Initialize();
+    //             }
+    //         }
+    //     }
+    //     else if (Wallet.Instance.hotbarList.Count > 0)
+    //     {
+    //         Wallet.Instance.hotbarList[Wallet.Instance.hotbarList.Count - 1].Add(new ID(0));
+    //     }
+    // }
 
-    public void RemoveHotbar()
-    {
-        if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
-        {
-            int index = Wallet.Instance.selectedListIndex;
-            if (index >= 0 && index < Wallet.Instance.hotbarList.Count && Wallet.Instance.hotbarList.Count > 1)
-            {
-                if (Wallet.Instance.selectedListIndex == index)
-                {
-                    Wallet.Instance.selectedID = null;
-                }
-                Wallet.Instance.hotbarList.RemoveAt(index);
-                Wallet.Instance.selectedID = null;
-                Initialize();
-                return;
-            }
-        }
+    // public void RemoveHotbar()
+    // {
+    //     if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
+    //     {
+    //         int index = Wallet.Instance.selectedListIndex;
+    //         if (index >= 0 && index < Wallet.Instance.hotbarList.Count && Wallet.Instance.hotbarList.Count > 1)
+    //         {
+    //             if (Wallet.Instance.selectedListIndex == index)
+    //             {
+    //                 Wallet.Instance.selectedID = null;
+    //             }
+    //             Wallet.Instance.hotbarList.RemoveAt(index);
+    //             Wallet.Instance.selectedID = null;
+    //             Initialize();
+    //         }
+    //     }
+    //     else if (Wallet.Instance.hotbarList.Count > 1)
+    //     {
+    //         Wallet.Instance.hotbarList.RemoveAt(Wallet.Instance.hotbarList.Count - 1);
+    //         Initialize();
+    //     }
+    // }
 
-        if (Wallet.Instance.hotbarList.Count > 1)
-        {
-            Wallet.Instance.hotbarList.RemoveAt(Wallet.Instance.hotbarList.Count - 1);
-            Initialize();
-        }
-    }
+    // public void RemoveHotbarSlot()
+    // {
+    //     if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
+    //     {
+    //         int listIndex = Wallet.Instance.selectedListIndex;
+    //         int slotIndex = Wallet.Instance.selectedIndex;
 
-    public void RemoveHotbarSlot()
-    {
-        if (Wallet.Instance.selectedID != null && Wallet.Instance.selectedType == "hotbar")
-        {
-            int listIndex = Wallet.Instance.selectedListIndex;
-            int slotIndex = Wallet.Instance.selectedIndex;
+    //         if (listIndex >= 0 && listIndex < Wallet.Instance.hotbarList.Count)
+    //         {
+    //             List<ID> hotbar = Wallet.Instance.hotbarList[listIndex];
+    //             if (slotIndex >= 0 && slotIndex < hotbar.Count && hotbar.Count > 1)
+    //             {
+    //                 hotbar.RemoveAt(slotIndex);
+    //                 Wallet.Instance.selectedIndex--;
+    //                 if (Wallet.Instance.selectedIndex < 0)
+    //                 {
+    //                     Wallet.Instance.selectedIndex = 0;
+    //                 }
+    //             }
+    //         }
+    //         return;
+    //     }
 
-            if (listIndex >= 0 && listIndex < Wallet.Instance.hotbarList.Count)
-            {
-                List<ID> hotbar = Wallet.Instance.hotbarList[listIndex];
-                if (slotIndex >= 0 && slotIndex < hotbar.Count && hotbar.Count > 1)
-                {
-                    hotbar.RemoveAt(slotIndex);
-                    Wallet.Instance.selectedIndex--;
-                    if (Wallet.Instance.selectedIndex < 0)
-                    {
-                        Wallet.Instance.selectedIndex = 0;
-                    }
-                    Initialize();
-                    return;
-                }
-            }
-        }
-
-        if (Wallet.Instance.hotbarList.Count > 0)
-        {
-            List<ID> lastHotbar = Wallet.Instance.hotbarList[Wallet.Instance.hotbarList.Count - 1];
-            if (lastHotbar.Count > 1)
-            {
-                lastHotbar.RemoveAt(lastHotbar.Count - 1);
-            }
-            Initialize();
-        }
-    }
+    //     if (Wallet.Instance.hotbarList.Count > 0)
+    //     {
+    //         List<ID> lastHotbar = Wallet.Instance.hotbarList[Wallet.Instance.hotbarList.Count - 1];
+    //         if (lastHotbar.Count > 1)
+    //         {
+    //             lastHotbar.RemoveAt(lastHotbar.Count - 1);
+    //         }
+    //     }
+    // }
 
     public void Refresh()
     {
@@ -298,8 +300,7 @@ public class UIManager : MonoBehaviour
     public void ToggleBottomMode(string mode)
     {
         bottomMode = mode;
-        Initialize();
-
+        SetBottomPanel();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -308,16 +309,9 @@ public class UIManager : MonoBehaviour
     public void SelectSlot(SlotUI slot)
     {
         Wallet.Instance.SelectSlot(slot);
-        informedID = null;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
-    
-    public void InitializeInformation(SlotUI slot)
-    {
-        informedID = slot.slotId;
-        Debug.Log(Wallet.Instance.GetSlotById(slot.slotId).item.id);
-    }
 
     public void CloseInvPanel()
     {
@@ -351,7 +345,6 @@ public class UIManager : MonoBehaviour
             dockPanel.gameObject.SetActive(true);
 
             isBottomPanelOn = false;
-            Initialize();
         }
     }
 
@@ -363,7 +356,8 @@ public class UIManager : MonoBehaviour
             dockPanel.gameObject.SetActive(false);
 
             isBottomPanelOn = true;
-            Initialize();
+
+            SetBottomPanel();
         }
     }
 }

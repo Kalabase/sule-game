@@ -5,11 +5,17 @@ public class ContentScroller : MonoBehaviour
 {
     public ScrollRect scrollRect;
 
-    public void Update()
+    public void Scroll()
     {
-        ScrollToSelectedSlot();
+        StartCoroutine(DelayedScroll());
     }
 
+    private System.Collections.IEnumerator DelayedScroll()
+    {
+        yield return null; // 1 frame bekle
+        ScrollToSelectedSlot();
+    }
+    
     public void ScrollToSelectedSlot()
     {
         RectTransform content = GetComponent<RectTransform>();
@@ -21,26 +27,27 @@ public class ContentScroller : MonoBehaviour
         int slotCount = Wallet.Instance.hotbarList[Wallet.Instance.selectedHotbarIndex].Count;
         int selectedIndex = Wallet.Instance.selectedHotbarSlotIndex;
 
-        if (contentWidth <= viewportWidth || slotCount <= 1)
+        float y = contentWidth - viewportWidth;
+        if (y < 0) return; // İçerik görünümden küçükse kaydırma yok
+
+        float k = (selectedIndex * 54f) + 30f;
+        float p = (contentWidth / 2f) - k;
+
+        float targetX;
+        if (Mathf.Abs(p) * 2 <= y)
         {
-            // Center content if it's smaller than the viewport
-            //float offset = (viewportWidth - contentWidth) / 2f;
-            //content.anchoredPosition = new Vector2(offset, content.anchoredPosition.y);
-            return;
+            targetX = p;
+        }
+        else if (p > 0)
+        {
+            targetX = y / 2;
+        }
+        else // Mathf.Abs(p) > y && p < 0
+        {
+            targetX = -y / 2;
         }
 
-        // Calculate center index (e.g., 3 for 7 slots)
-        float centerIndex = (slotCount - 1) / 2f;
-
-        // How far selected index is from center
-        float offsetFromCenter = selectedIndex - centerIndex;
-
-        // Scroll amount per slot
-        float scrollStep = (contentWidth - viewportWidth) / (slotCount - 1);
-
-        // Negative because moving right means content moves left
-        float targetX = -scrollStep * offsetFromCenter;
-
         content.anchoredPosition = new Vector2(targetX, content.anchoredPosition.y);
+        Debug.Log($"slot index: {selectedIndex}, content width: {contentWidth}, viewport width: {viewportWidth}, targetX: {targetX}, slot konumu: {k}, ortadan fark: {p}");
     }
 }
